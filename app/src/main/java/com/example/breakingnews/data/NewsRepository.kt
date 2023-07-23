@@ -12,7 +12,7 @@ import retrofit2.HttpException
 
 class NewsRepository(
     @DispatcherModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val newsRemoteDataSource: NewsRemoteDataSource,
+    private val newsRemoteDataSource: NewsRemoteDataSource
 ) {
 
     fun getSources(request: SourcesRequestModel = SourcesRequestModel()): Flow<Result<SourcesResponseModel?>> =
@@ -24,7 +24,7 @@ class NewsRepository(
             } catch (e: HttpException) {
                 emit(
                     Result.Error(
-                        errorMessage = e.localizedMessage ?: "A network error has occured"
+                        errorMessage = e.localizedMessage ?: "A network error has occurred"
                     )
                 )
             }
