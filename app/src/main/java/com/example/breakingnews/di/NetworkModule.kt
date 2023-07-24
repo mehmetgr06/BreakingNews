@@ -1,7 +1,9 @@
 package com.example.breakingnews.di
 
 import com.example.breakingnews.base.AppConstants.BASE_URL
+import com.example.breakingnews.base.AuthInterceptor
 import com.example.breakingnews.data.NewsRemoteDataSource
+import com.example.breakingnews.data.NewsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,20 +23,19 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         okHttpLoggingInterceptor: HttpLoggingInterceptor,
-    ): OkHttpClient {
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient =
         OkHttpClient.Builder().apply {
+            addInterceptor(authInterceptor)
             addInterceptor(okHttpLoggingInterceptor)
             connectTimeout(10, TimeUnit.SECONDS)
             writeTimeout(10, TimeUnit.SECONDS)
             readTimeout(10, TimeUnit.SECONDS)
-
-            return build()
-        }
-    }
+        }.build()
 
     @Provides
     @Singleton
-    fun providePaprikaApi(client: OkHttpClient): NewsRemoteDataSource {
+    fun provideApi(client: OkHttpClient): NewsRemoteDataSource {
         return Retrofit.Builder()
             .client(client)
             .baseUrl(BASE_URL)
@@ -49,6 +50,13 @@ object NetworkModule {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
         return logging
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideRepository(api: NewsRemoteDataSource): NewsRepository {
+        return NewsRepository(api)
     }
 
 }
