@@ -3,7 +3,9 @@ package com.example.breakingnews.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.breakingnews.base.Result
+import com.example.breakingnews.domain.GetNewsUseCase
 import com.example.breakingnews.domain.GetSourcesUseCase
+import com.example.breakingnews.ui.model.NewsState
 import com.example.breakingnews.ui.model.SourcesState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SourcesViewModel @Inject constructor(
-    private val getSourcesUseCase: GetSourcesUseCase
+    private val getSourcesUseCase: GetSourcesUseCase,
+    private val getNewsUseCase: GetNewsUseCase
 ) : ViewModel() {
 
     private val _sources = MutableStateFlow<SourcesState?>(null)
@@ -23,6 +26,9 @@ class SourcesViewModel @Inject constructor(
 
     private val _categoryList = MutableStateFlow<List<String>?>(null)
     val categoryList: StateFlow<List<String>?> = _categoryList
+
+    private val _news = MutableStateFlow<NewsState?>(null)
+    val news: StateFlow<NewsState?> = _news
 
     init {
         getSources()
@@ -51,4 +57,26 @@ class SourcesViewModel @Inject constructor(
             }.launchIn(viewModelScope)
         }
     }
+
+    fun getNews(source: String) {
+        viewModelScope.launch {
+            getNewsUseCase(source).onEach { result ->
+                when (result) {
+                    is Result.Success -> {
+                        _news.value = NewsState(newstems = result.data)
+                    }
+
+                    is Result.Loading -> {
+                        _news.value = NewsState(isLoading = true)
+                    }
+
+                    is Result.Error -> {
+                        _news.value =
+                            NewsState(errorMessage = result.message ?: "An error has occurred")
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+    }
+
 }
