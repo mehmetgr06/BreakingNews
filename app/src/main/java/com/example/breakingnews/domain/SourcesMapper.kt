@@ -21,7 +21,9 @@ object SourcesMapper {
                 },
                 response.status,
                 response.sources?.map {
-                    it.category.toString()
+                    it.category.toString().replaceFirstChar { firstChar ->
+                        firstChar.uppercase()
+                    }
                 }?.distinct()
             )
         }
