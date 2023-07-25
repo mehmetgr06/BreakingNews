@@ -1,10 +1,11 @@
 package com.example.breakingnews.domain
 
 import com.example.breakingnews.data.NewsRepository
-import com.example.breakingnews.data.model.SourcesResponseModel
 import com.example.breakingnews.di.DispatcherModule
 import com.example.breakingnews.base.Result
+import com.example.breakingnews.ui.model.Source
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -15,14 +16,14 @@ class GetSourcesUseCase @Inject constructor(
     private val newsRepository: NewsRepository,
     @DispatcherModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
-    suspend operator fun invoke(): Flow<Result<SourcesResponseModel?>> =
+    suspend operator fun invoke(): Flow<Result<Source?>> =
         flow {
             emit(Result.Loading())
+            //to show shimmer animation
+            delay(1500)
             try {
                 val response = newsRepository.getSources()
-                response.collect { result ->
-                    emit(Result.Success(result.data))
-                }
+                emit(Result.Success(SourcesMapper.mapToUiSource(response.body())))
             } catch (e: HttpException) {
                 emit(
                     Result.Error(

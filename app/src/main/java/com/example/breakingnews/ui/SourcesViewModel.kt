@@ -30,15 +30,16 @@ class SourcesViewModel @Inject constructor(
             getSourcesUseCase().onEach { result ->
                 when (result) {
                     is Result.Success -> {
-
+                        _sources.value = SourcesState(sourceItems = result.data?.sources)
                     }
 
                     is Result.Loading -> {
-
+                        _sources.value = SourcesState(isLoading = true)
                     }
 
                     is Result.Error -> {
-
+                        _sources.value =
+                            SourcesState(errorMessage = result.message ?: "An error has occurred")
                     }
                 }
             }.launchIn(viewModelScope)

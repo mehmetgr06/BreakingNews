@@ -1,6 +1,11 @@
 package com.example.breakingnews.ui.model
 
 data class Source(
+    val sources: List<SourceItem>?,
+    val status: String?
+)
+
+data class SourceItem(
     val category: String?,
     val country: String?,
     val description: String?,
