@@ -1,6 +1,7 @@
 package com.example.breakingnews.ui.composeviews
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,8 +33,8 @@ import com.example.breakingnews.ui.SourcesViewModel
 import com.example.breakingnews.ui.model.Article
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NewsList(source: String, viewModel: SourcesViewModel) {
     LaunchedEffect(key1 = source) {
@@ -48,10 +49,19 @@ fun NewsList(source: String, viewModel: SourcesViewModel) {
         }
 
         news?.newstems?.articles?.isNotEmpty() == true -> {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(news?.newstems?.articles.orEmpty()) { article ->
-                    article?.let {
-                        NewsItemView(article = article)
+            val firstThreeArticles = news?.newstems?.articles.orEmpty().take(3)
+            val remainingArticles = news?.newstems?.articles.orEmpty().drop(3)
+            Column {
+                Divider(modifier = Modifier.padding(vertical = 8.dp), thickness = 2.dp)
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    item {
+                        NewsViewPager(articles = firstThreeArticles)
+                    }
+
+                    items(remainingArticles) { article ->
+                        article?.let {
+                            NewsItemView(article = article)
+                        }
                     }
                 }
             }
@@ -73,8 +83,11 @@ fun NewsList(source: String, viewModel: SourcesViewModel) {
 }
 
 @Composable
-fun NewsItemView(article: Article) {
-    Column {
+fun NewsItemView(article: Article, modifier: Modifier = Modifier) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxSize()
+    ) {
         SubcomposeAsyncImage(
             model = article.urlToImage,
             contentDescription = "News Banner Image",
