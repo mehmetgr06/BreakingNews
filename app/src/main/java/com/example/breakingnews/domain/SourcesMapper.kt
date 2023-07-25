@@ -20,6 +20,9 @@ object SourcesMapper {
                     )
                 },
                 response.status,
+                response.sources?.map {
+                    it.category.toString()
+                }?.distinct()
             )
         }
     }

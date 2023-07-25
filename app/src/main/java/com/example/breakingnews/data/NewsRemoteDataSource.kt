@@ -10,6 +10,7 @@ interface NewsRemoteDataSource {
     @GET(ENDPOINT_SOURCES)
     suspend fun getSources(
         @Query("language") language: String = LANGUAGE_EN,
+        @Query("category") category: String = "",
         @Query("apiKey") apiKey: String = API_KEY
     ): Response<SourcesResponseModel>
 

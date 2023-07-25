@@ -21,16 +21,22 @@ class SourcesViewModel @Inject constructor(
     private val _sources = MutableStateFlow<SourcesState?>(null)
     val sources: StateFlow<SourcesState?> = _sources
 
+    private val _categoryList = MutableStateFlow<List<String>?>(null)
+    val categoryList: StateFlow<List<String>?> = _categoryList
+
     init {
         getSources()
     }
 
-    fun getSources() {
+    fun getSources(category: String = "") {
         viewModelScope.launch {
-            getSourcesUseCase().onEach { result ->
+            getSourcesUseCase(category).onEach { result ->
                 when (result) {
                     is Result.Success -> {
-                        _sources.value = SourcesState(sourceItems = result.data?.sources)
+                        _sources.value = SourcesState(sourceItems = result.data)
+                        if (category.isEmpty()) {
+                            _categoryList.value = result.data?.categoryList.orEmpty()
+                        }
                     }
 
                     is Result.Loading -> {

@@ -7,6 +7,6 @@ import javax.inject.Inject
 class NewsRepository @Inject constructor(
     private val newsRemoteDataSource: NewsRemoteDataSource
 ) {
-    suspend fun getSources(): Response<SourcesResponseModel> =
-        newsRemoteDataSource.getSources()
+    suspend fun getSources(category: String = ""): Response<SourcesResponseModel> =
+        newsRemoteDataSource.getSources(category = category)
 }
