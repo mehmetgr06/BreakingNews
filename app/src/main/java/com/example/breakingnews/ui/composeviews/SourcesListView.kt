@@ -1,6 +1,7 @@
 package com.example.breakingnews.ui.composeviews
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,17 +25,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.breakingnews.base.shimmerBackground
 import com.example.breakingnews.ui.SourcesViewModel
 import com.example.breakingnews.ui.model.SourceItem
+import com.example.breakingnews.ui.navigation.AppDestinations
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SourcesList(viewModel: SourcesViewModel = hiltViewModel()) {
+fun SourcesList(navController: NavController, viewModel: SourcesViewModel) {
     val sources by viewModel.sources.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -42,15 +44,17 @@ fun SourcesList(viewModel: SourcesViewModel = hiltViewModel()) {
         sources?.isLoading == true -> {
             LoadingView()
         }
+
         sources?.sourceItems?.sources?.isNotEmpty() == true -> {
             Column {
                 LazyColumn {
                     items(sources?.sourceItems?.sources.orEmpty()) { source ->
-                        SourceItemView(source = source)
+                        SourceItemView(navController = navController, source = source)
                     }
                 }
             }
         }
+
         else -> {
             Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) {
                 LaunchedEffect(key1 = sources?.errorMessage) {
@@ -66,8 +70,10 @@ fun SourcesList(viewModel: SourcesViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun SourceItemView(source: SourceItem) {
-    Column {
+fun SourceItemView(navController: NavController, source: SourceItem) {
+    Column(modifier = Modifier.clickable {
+        navController.navigate("${AppDestinations.NEWS_LIST}/${source.id}")
+    }) {
         Text(
             modifier = Modifier.padding(8.dp),
             fontSize = 20.sp,
