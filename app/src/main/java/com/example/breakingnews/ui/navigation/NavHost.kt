@@ -43,7 +43,7 @@ fun BreakingNewsNavHost(
             arguments = listOf(navArgument("source") { type = NavType.StringType })
         ) { backStackEntry ->
             val source = backStackEntry.arguments?.getString("source")
-            NewsList(source.orEmpty(), viewModel)
+            NewsList(source.orEmpty(), viewModel, navController)
         }
     }
 }
