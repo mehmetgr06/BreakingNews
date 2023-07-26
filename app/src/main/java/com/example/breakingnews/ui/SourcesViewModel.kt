@@ -101,16 +101,18 @@ class SourcesViewModel @Inject constructor(
     fun saveArticle(article: Article) {
         viewModelScope.launch {
             saveArticleUseCase(article)
-            _savedArticles.value = mutableListOf() //todo
-            _savedArticles.value.add(article)
+            val updatedList = _savedArticles.value.toMutableList()
+            updatedList.add(article)
+            _savedArticles.emit(updatedList)
         }
     }
 
     fun unSaveArticle(article: Article) {
         viewModelScope.launch {
             unSaveArticleUseCase(article)
-            _savedArticles.value = mutableListOf()
-            _savedArticles.value.remove(article)
+            val updatedList = _savedArticles.value.toMutableList()
+            updatedList.remove(article)
+            _savedArticles.emit(updatedList)
         }
     }
 }
