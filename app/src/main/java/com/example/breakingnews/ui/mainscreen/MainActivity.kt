@@ -1,4 +1,4 @@
-package com.example.breakingnews
+package com.example.breakingnews.ui.mainscreen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.example.breakingnews.ui.SourcesViewModel
 import com.example.breakingnews.ui.navigation.BreakingNewsNavHost
 import com.example.breakingnews.ui.theme.BreakingNewsTheme
 import dagger.hilt.android.AndroidEntryPoint

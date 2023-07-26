@@ -1,4 +1,4 @@
-package com.example.breakingnews.data
+package com.example.breakingnews.data.datasource
 
 import com.example.breakingnews.data.model.NewsResponseModel
 import com.example.breakingnews.data.model.SourcesResponseModel

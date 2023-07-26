@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.breakingnews.base.shimmerBackground
-import com.example.breakingnews.ui.SourcesViewModel
+import com.example.breakingnews.common.shimmerBackground
+import com.example.breakingnews.ui.mainscreen.SourcesViewModel
 import com.example.breakingnews.ui.model.SourceItem
 import com.example.breakingnews.ui.navigation.AppDestinations
 import kotlinx.coroutines.launch

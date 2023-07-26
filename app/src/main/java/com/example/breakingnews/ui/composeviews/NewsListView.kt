@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
-import com.example.breakingnews.ui.SourcesViewModel
+import com.example.breakingnews.ui.mainscreen.SourcesViewModel
 import com.example.breakingnews.ui.model.Article
 import kotlinx.coroutines.launch
 

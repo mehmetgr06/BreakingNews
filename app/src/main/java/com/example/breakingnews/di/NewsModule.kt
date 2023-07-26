@@ -1,6 +1,6 @@
 package com.example.breakingnews.di
 
-import com.example.breakingnews.data.NewsRemoteDataSource
+import com.example.breakingnews.data.datasource.NewsRemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

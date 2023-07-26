@@ -1,4 +1,4 @@
-package com.example.breakingnews.domain
+package com.example.breakingnews.domain.mapper
 
 import com.example.breakingnews.data.model.NewsResponseModel
 import com.example.breakingnews.ui.model.Article

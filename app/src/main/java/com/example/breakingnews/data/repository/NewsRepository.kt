@@ -1,5 +1,7 @@
-package com.example.breakingnews.data
+package com.example.breakingnews.data.repository
 
+import com.example.breakingnews.data.datasource.NewsDao
+import com.example.breakingnews.data.datasource.NewsRemoteDataSource
 import com.example.breakingnews.data.model.NewsResponseModel
 import com.example.breakingnews.data.model.SourcesResponseModel
 import com.example.breakingnews.ui.model.Article

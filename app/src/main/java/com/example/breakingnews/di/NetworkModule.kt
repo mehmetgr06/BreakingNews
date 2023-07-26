@@ -2,11 +2,11 @@ package com.example.breakingnews.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.breakingnews.base.AppConstants.BASE_URL
-import com.example.breakingnews.base.AuthInterceptor
-import com.example.breakingnews.data.NewsDatabase
-import com.example.breakingnews.data.NewsRemoteDataSource
-import com.example.breakingnews.data.NewsRepository
+import com.example.breakingnews.common.AppConstants.BASE_URL
+import com.example.breakingnews.common.AuthInterceptor
+import com.example.breakingnews.data.datasource.NewsDatabase
+import com.example.breakingnews.data.datasource.NewsRemoteDataSource
+import com.example.breakingnews.data.repository.NewsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,7 +1,7 @@
-package com.example.breakingnews.base
+package com.example.breakingnews.common
 
-import com.example.breakingnews.base.AppConstants.API_KEY
-import com.example.breakingnews.base.AppConstants.HEADER_API_KEY
+import com.example.breakingnews.common.AppConstants.API_KEY
+import com.example.breakingnews.common.AppConstants.HEADER_API_KEY
 import com.example.breakingnews.di.DispatcherModule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.runBlocking

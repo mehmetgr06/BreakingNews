@@ -14,7 +14,7 @@ import androidx.navigation.navArgument
 import com.example.breakingnews.ui.composeviews.NewsList
 import com.example.breakingnews.ui.composeviews.SourcesList
 import androidx.navigation.compose.composable
-import com.example.breakingnews.ui.SourcesViewModel
+import com.example.breakingnews.ui.mainscreen.SourcesViewModel
 import com.example.breakingnews.ui.composeviews.CategoryListView
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.breakingnews.data
+package com.example.breakingnews.data.datasource
 
 import androidx.room.Dao
 import androidx.room.Delete

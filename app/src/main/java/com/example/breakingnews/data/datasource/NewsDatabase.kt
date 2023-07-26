@@ -1,4 +1,4 @@
-package com.example.breakingnews.data
+package com.example.breakingnews.data.datasource
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

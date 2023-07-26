@@ -1,13 +1,13 @@
-package com.example.breakingnews.ui
+package com.example.breakingnews.ui.mainscreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.breakingnews.base.Result
-import com.example.breakingnews.domain.GetNewsUseCase
-import com.example.breakingnews.domain.GetSavedArticlesUseCase
-import com.example.breakingnews.domain.GetSourcesUseCase
-import com.example.breakingnews.domain.SaveArticleUseCase
-import com.example.breakingnews.domain.UnSaveArticleUseCase
+import com.example.breakingnews.common.Result
+import com.example.breakingnews.domain.usecase.GetNewsUseCase
+import com.example.breakingnews.domain.usecase.GetSavedArticlesUseCase
+import com.example.breakingnews.domain.usecase.GetSourcesUseCase
+import com.example.breakingnews.domain.usecase.SaveArticleUseCase
+import com.example.breakingnews.domain.usecase.UnSaveArticleUseCase
 import com.example.breakingnews.ui.model.Article
 import com.example.breakingnews.ui.model.NewsState
 import com.example.breakingnews.ui.model.SourcesState

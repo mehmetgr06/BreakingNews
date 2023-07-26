@@ -1,9 +1,10 @@
-package com.example.breakingnews.domain
+package com.example.breakingnews.domain.usecase
 
-import com.example.breakingnews.data.NewsRepository
+import com.example.breakingnews.data.repository.NewsRepository
 import com.example.breakingnews.di.DispatcherModule
-import com.example.breakingnews.base.Result
+import com.example.breakingnews.common.Result
 import com.example.breakingnews.data.model.ErrorResponse
+import com.example.breakingnews.domain.mapper.SourcesMapper
 import com.example.breakingnews.ui.model.Source
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
