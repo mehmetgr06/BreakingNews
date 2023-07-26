@@ -14,8 +14,7 @@ object NewsMapper {
                         content = article.content,
                         description = article.description,
                         publishedAt = article.publishedAt,
-                        source = article.source,
-                        title = article.title,
+                        title = article.title.orEmpty(),
                         url = article.url,
                         urlToImage = article.urlToImage
                     )

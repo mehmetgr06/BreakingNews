@@ -1,7 +1,10 @@
 package com.example.breakingnews.di
 
+import android.app.Application
+import androidx.room.Room
 import com.example.breakingnews.base.AppConstants.BASE_URL
 import com.example.breakingnews.base.AuthInterceptor
+import com.example.breakingnews.data.NewsDatabase
 import com.example.breakingnews.data.NewsRemoteDataSource
 import com.example.breakingnews.data.NewsRepository
 import dagger.Module
@@ -55,8 +58,18 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRepository(api: NewsRemoteDataSource): NewsRepository {
-        return NewsRepository(api)
+    fun provideRepository(api: NewsRemoteDataSource, database: NewsDatabase): NewsRepository {
+        return NewsRepository(api, database.newsDao)
     }
 
+
+    @Provides
+    @Singleton
+    fun provideNewsDatabase(app: Application): NewsDatabase {
+        return Room.databaseBuilder(
+            app,
+            NewsDatabase::class.java,
+            NewsDatabase.DATABASE_NAME
+        ).build()
+    }
 }

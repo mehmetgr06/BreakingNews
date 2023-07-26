@@ -1,6 +1,7 @@
 package com.example.breakingnews.ui.composeviews
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,6 +66,7 @@ fun NewsList(source: String, viewModel: SourcesViewModel, navController: NavCont
             news?.isLoading == true -> {
                 LoadingView()
             }
+
             news?.newstems?.articles?.isNotEmpty() == true -> {
                 val firstThreeArticles = news?.newstems?.articles.orEmpty().take(3)
                 val remainingArticles = news?.newstems?.articles.orEmpty().drop(3)
@@ -72,17 +74,29 @@ fun NewsList(source: String, viewModel: SourcesViewModel, navController: NavCont
                     Divider(modifier = Modifier.padding(vertical = 8.dp), thickness = 2.dp)
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         item {
-                            NewsViewPager(articles = firstThreeArticles)
+                            NewsViewPager(articles = firstThreeArticles, viewModel = viewModel)
                         }
 
                         items(remainingArticles) { article ->
                             article?.let {
-                                NewsItemView(article = article)
+                                val savedArticles by viewModel.savedArticles.collectAsStateWithLifecycle()
+                                val isSaved = article in savedArticles
+                                NewsItemView(
+                                    article = article,
+                                    isSavedBookmark = isSaved,
+                                    onSaved = {
+                                        viewModel.saveArticle(it)
+                                    },
+                                    onUnSaved = {
+                                        viewModel.unSaveArticle(it)
+                                    }
+                                )
                             }
                         }
                     }
                 }
             }
+
             else -> {
                 LaunchedEffect(key1 = news?.errorMessage) {
                     scope.launch {
@@ -110,7 +124,13 @@ fun AppTopBar(title: String, onBackPressed: () -> Unit) {
 }
 
 @Composable
-fun NewsItemView(article: Article, modifier: Modifier = Modifier) {
+fun NewsItemView(
+    article: Article,
+    isSavedBookmark: Boolean,
+    onSaved: (Article) -> Unit,
+    onUnSaved: (Article) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = modifier.fillMaxSize()
@@ -137,6 +157,16 @@ fun NewsItemView(article: Article, modifier: Modifier = Modifier) {
             fontSize = 16.sp,
             color = Color.Black,
             text = article.publishedAt.toString()
+        )
+        Text(
+            modifier = Modifier
+                .padding(6.dp)
+                .clickable {
+                    if (isSavedBookmark) onUnSaved(article) else onSaved(article)
+                },
+            fontSize = 16.sp,
+            color = Color.Blue,
+            text = if (isSavedBookmark) "Listemden Çıkar" else "Listeme Kaydet"
         )
         Divider(modifier = Modifier.padding(vertical = 16.dp), thickness = 1.dp)
     }

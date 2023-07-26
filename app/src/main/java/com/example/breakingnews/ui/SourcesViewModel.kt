@@ -4,7 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.breakingnews.base.Result
 import com.example.breakingnews.domain.GetNewsUseCase
+import com.example.breakingnews.domain.GetSavedArticlesUseCase
 import com.example.breakingnews.domain.GetSourcesUseCase
+import com.example.breakingnews.domain.SaveArticleUseCase
+import com.example.breakingnews.domain.UnSaveArticleUseCase
+import com.example.breakingnews.ui.model.Article
 import com.example.breakingnews.ui.model.NewsState
 import com.example.breakingnews.ui.model.SourcesState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +22,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SourcesViewModel @Inject constructor(
     private val getSourcesUseCase: GetSourcesUseCase,
-    private val getNewsUseCase: GetNewsUseCase
+    private val getNewsUseCase: GetNewsUseCase,
+    private val getSavedArticlesUseCase: GetSavedArticlesUseCase,
+    private val saveArticleUseCase: SaveArticleUseCase,
+    private val unSaveArticleUseCase: UnSaveArticleUseCase
 ) : ViewModel() {
 
     private val _sources = MutableStateFlow<SourcesState?>(null)
@@ -30,8 +37,12 @@ class SourcesViewModel @Inject constructor(
     private val _news = MutableStateFlow<NewsState?>(null)
     val news: StateFlow<NewsState?> = _news
 
+    private val _savedArticles = MutableStateFlow<MutableList<Article>>(mutableListOf())
+    val savedArticles: StateFlow<MutableList<Article>> = _savedArticles
+
     init {
         getSources()
+        getSelectedArticles()
     }
 
     fun getSources(category: String = "") {
@@ -79,4 +90,27 @@ class SourcesViewModel @Inject constructor(
         }
     }
 
+    private fun getSelectedArticles() {
+        viewModelScope.launch {
+            getSavedArticlesUseCase().onEach {
+                _savedArticles.value = it.toMutableList()
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    fun saveArticle(article: Article) {
+        viewModelScope.launch {
+            saveArticleUseCase(article)
+            _savedArticles.value = mutableListOf() //todo
+            _savedArticles.value.add(article)
+        }
+    }
+
+    fun unSaveArticle(article: Article) {
+        viewModelScope.launch {
+            unSaveArticleUseCase(article)
+            _savedArticles.value = mutableListOf()
+            _savedArticles.value.remove(article)
+        }
+    }
 }

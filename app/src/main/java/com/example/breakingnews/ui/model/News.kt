@@ -1,25 +1,22 @@
 package com.example.breakingnews.ui.model
 
-import com.example.breakingnews.data.model.NewsSource
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity
 data class News(
     val articles: List<Article?>?,
     val status: String?,
     val totalResults: Int?
 )
 
+@Entity
 data class Article(
     val author: String?,
     val content: String?,
     val description: String?,
     val publishedAt: String?,
-    val source: NewsSource?,
-    val title: String?,
+    @PrimaryKey val title: String = "",
     val url: String?,
     val urlToImage: String?
-)
-
-data class NewsSource(
-    val id: String?,
-    val name: String?
 )

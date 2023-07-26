@@ -11,33 +11,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.breakingnews.ui.SourcesViewModel
 import com.example.breakingnews.ui.model.Article
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun NewsViewPager(articles: List<Article?>) {
+fun NewsViewPager(articles: List<Article?>, viewModel: SourcesViewModel) {
     Column {
-        HorizontalIndicators(articles)
+        HorizontalIndicators(articles, viewModel)
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HorizontalIndicators(articles: List<Article?>) {
+fun HorizontalIndicators(articles: List<Article?>, viewModel: SourcesViewModel) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(400.dp)
+            .height(444.dp)
     ) {
         HorizontalPager(pageCount = articles.size, state = pagerState, modifier = Modifier
             .pointerInput(Unit) {
@@ -51,11 +54,22 @@ fun HorizontalIndicators(articles: List<Article?>) {
                 }
             }) {
             articles[it]?.let { article ->
+                val savedArticles by viewModel.savedArticles.collectAsStateWithLifecycle()
+                val isSaved = article in savedArticles
                 Column(
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    NewsItemView(article = article)
+                    NewsItemView(
+                        article = article,
+                        isSavedBookmark = isSaved,
+                        onSaved = { article ->
+                            viewModel.saveArticle(article)
+                        },
+                        onUnSaved = { article ->
+                            viewModel.unSaveArticle(article)
+                        }
+                    )
                 }
             }
         }
