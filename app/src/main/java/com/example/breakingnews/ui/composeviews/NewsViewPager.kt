@@ -11,30 +11,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.breakingnews.ui.SourcesViewModel
 import com.example.breakingnews.ui.model.Article
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun NewsViewPager(articles: List<Article?>, viewModel: SourcesViewModel) {
+fun NewsViewPager(
+    articles: List<Article?>,
+    savedArticles: MutableList<Article>,
+    onSaved: (Article) -> Unit,
+    onUnsaved: (Article) -> Unit
+) {
     Column {
-        HorizontalIndicators(articles, viewModel)
+        HorizontalIndicators(articles, savedArticles, onSaved, onUnsaved)
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HorizontalIndicators(articles: List<Article?>, viewModel: SourcesViewModel) {
+fun HorizontalIndicators(
+    articles: List<Article?>,
+    savedArticles: MutableList<Article>,
+    onSaved: (Article) -> Unit,
+    onUnsaved: (Article) -> Unit
+) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     Box(
@@ -54,7 +61,6 @@ fun HorizontalIndicators(articles: List<Article?>, viewModel: SourcesViewModel) 
                 }
             }) {
             articles[it]?.let { article ->
-                val savedArticles by viewModel.savedArticles.collectAsStateWithLifecycle()
                 val isSaved = article in savedArticles
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -64,10 +70,10 @@ fun HorizontalIndicators(articles: List<Article?>, viewModel: SourcesViewModel) 
                         article = article,
                         isSavedBookmark = isSaved,
                         onSaved = { article ->
-                            viewModel.saveArticle(article)
+                            onSaved(article)
                         },
                         onUnSaved = { article ->
-                            viewModel.unSaveArticle(article)
+                            onUnsaved(article)
                         }
                     )
                 }

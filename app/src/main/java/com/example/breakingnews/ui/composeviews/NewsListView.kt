@@ -48,6 +48,7 @@ fun NewsList(source: String, viewModel: SourcesViewModel, navController: NavCont
         viewModel.getNews(source)
     }
     val news by viewModel.news.collectAsStateWithLifecycle()
+    val savedArticles by viewModel.savedArticles.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -74,12 +75,20 @@ fun NewsList(source: String, viewModel: SourcesViewModel, navController: NavCont
                     Divider(modifier = Modifier.padding(vertical = 8.dp), thickness = 2.dp)
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         item {
-                            NewsViewPager(articles = firstThreeArticles, viewModel = viewModel)
+                            NewsViewPager(
+                                articles = firstThreeArticles,
+                                savedArticles = savedArticles,
+                                onSaved = {
+                                    viewModel.saveArticle(it)
+                                },
+                                onUnsaved = {
+                                    viewModel.unSaveArticle(it)
+                                }
+                            )
                         }
 
                         items(remainingArticles) { article ->
                             article?.let {
-                                val savedArticles by viewModel.savedArticles.collectAsStateWithLifecycle()
                                 val isSaved = article in savedArticles
                                 NewsItemView(
                                     article = article,
