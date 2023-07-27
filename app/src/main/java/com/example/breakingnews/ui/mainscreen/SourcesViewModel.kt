@@ -42,9 +42,13 @@ class SourcesViewModel @Inject constructor(
     private val _savedArticles = MutableStateFlow<MutableList<Article>>(mutableListOf())
     val savedArticles: StateFlow<MutableList<Article>> = _savedArticles
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
     private var updatedNews: NewsState? = NewsState()
     private val refreshInterval = 60_000L // 1 minute in milliseconds
     private var periodicJob: Job? = null
+    private var errorSimulationCounter = 0
 
     init {
         getSources()
@@ -89,8 +93,21 @@ class SourcesViewModel @Inject constructor(
         }
     }
 
-    fun getNews(source: String, isPeriodicRequest: Boolean = false) {
+    fun getNews(
+        source: String,
+        isPeriodicRequest: Boolean = false,
+        isPullToRefresh: Boolean = false
+    ) {
         viewModelScope.launch {
+            if (isPullToRefresh) {
+                errorSimulationCounter++
+                if (errorSimulationCounter == 3) {
+                    _news.value =
+                        NewsState(errorMessage = "Error Simulation: Something went wrong!")
+                    errorSimulationCounter = 0
+                    return@launch
+                }
+            }
             getNewsUseCase(source).collect { result ->
                 when (result) {
                     is Result.Success -> {
@@ -117,6 +134,7 @@ class SourcesViewModel @Inject constructor(
                     }
                 }
             }
+            _isRefreshing.emit(false)
         }
     }
 
