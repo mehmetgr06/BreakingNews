@@ -12,6 +12,8 @@ import com.example.breakingnews.ui.model.Article
 import com.example.breakingnews.ui.model.NewsState
 import com.example.breakingnews.ui.model.SourcesState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -40,9 +42,27 @@ class SourcesViewModel @Inject constructor(
     private val _savedArticles = MutableStateFlow<MutableList<Article>>(mutableListOf())
     val savedArticles: StateFlow<MutableList<Article>> = _savedArticles
 
+    private var updatedNews: NewsState? = NewsState()
+    private val refreshInterval = 60_000L // 1 minute in milliseconds
+    private var periodicJob: Job? = null
+
     init {
         getSources()
         getSelectedArticles()
+    }
+
+    fun startGetNewsPeriodicRequest(source: String) {
+        periodicJob = viewModelScope.launch {
+            while (true) {
+                delay(refreshInterval)
+                getNews(source, isPeriodicRequest = true)
+            }
+        }
+    }
+
+    fun stopNewsUpdates() {
+        periodicJob?.cancel()
+        periodicJob = null
     }
 
     fun getSources(category: String = "") {
@@ -69,16 +89,26 @@ class SourcesViewModel @Inject constructor(
         }
     }
 
-    fun getNews(source: String) {
+    fun getNews(source: String, isPeriodicRequest: Boolean = false) {
         viewModelScope.launch {
-            getNewsUseCase(source).onEach { result ->
+            getNewsUseCase(source).collect { result ->
                 when (result) {
                     is Result.Success -> {
-                        _news.value = NewsState(newstems = result.data)
+                        val response = result.data
+                        updatedNews = NewsState(newsItems = response)
+                        if (isPeriodicRequest.not()) {
+                            _news.value = NewsState(newsItems = response)
+                        } else {
+                            if (updatedNews != news.value) {
+                                _news.value = updatedNews
+                            }
+                        }
                     }
 
                     is Result.Loading -> {
-                        _news.value = NewsState(isLoading = true)
+                        if (isPeriodicRequest.not()) {
+                            _news.value = NewsState(isLoading = true)
+                        }
                     }
 
                     is Result.Error -> {
@@ -86,7 +116,7 @@ class SourcesViewModel @Inject constructor(
                             NewsState(errorMessage = result.message ?: "An error has occurred")
                     }
                 }
-            }.launchIn(viewModelScope)
+            }
         }
     }
 

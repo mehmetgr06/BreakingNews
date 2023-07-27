@@ -24,7 +24,7 @@ interface NewsRemoteDataSource {
     companion object {
         const val ENDPOINT_SOURCES = "top-headlines/sources"
         const val ENDPOINT_NEWS = "top-headlines"
-        const val API_KEY = "3cc266555b4a4b4f98a06810554b3c03"
+        const val API_KEY = "1ccfa43459824f8492906fd1b3c4b04e"
         const val LANGUAGE_EN = "en"
     }
 }

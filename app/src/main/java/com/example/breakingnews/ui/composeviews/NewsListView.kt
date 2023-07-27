@@ -23,10 +23,12 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,9 +46,23 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NewsList(source: String, viewModel: SourcesViewModel, navController: NavController) {
+
     LaunchedEffect(key1 = source) {
-        viewModel.getNews(source)
+        viewModel.getNews(source, isPeriodicRequest = false)
     }
+
+    // Start the periodic news updates only once when the NewsList composable is first composed
+    val triggerUpdates by rememberUpdatedState(newValue = Unit)
+    LaunchedEffect(key1 = triggerUpdates) {
+        viewModel.startGetNewsPeriodicRequest(source)
+    }
+    // Dispose the periodic news updates when the NewsList composable is disposed (screen closed)
+    DisposableEffect(key1 = triggerUpdates) {
+        onDispose {
+            viewModel.stopNewsUpdates()
+        }
+    }
+
     val news by viewModel.news.collectAsStateWithLifecycle()
     val savedArticles by viewModel.savedArticles.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -68,9 +84,9 @@ fun NewsList(source: String, viewModel: SourcesViewModel, navController: NavCont
                 LoadingView()
             }
 
-            news?.newstems?.articles?.isNotEmpty() == true -> {
-                val firstThreeArticles = news?.newstems?.articles.orEmpty().take(3)
-                val remainingArticles = news?.newstems?.articles.orEmpty().drop(3)
+            news?.newsItems?.articles?.isNotEmpty() == true -> {
+                val firstThreeArticles = news?.newsItems?.articles.orEmpty().take(3)
+                val remainingArticles = news?.newsItems?.articles.orEmpty().drop(3)
                 Column {
                     Divider(modifier = Modifier.padding(vertical = 8.dp), thickness = 2.dp)
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
