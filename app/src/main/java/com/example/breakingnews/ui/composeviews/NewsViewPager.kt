@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.example.breakingnews.ui.model.Article
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -48,6 +49,7 @@ fun HorizontalIndicators(
         modifier = Modifier
             .fillMaxWidth()
             .height(444.dp)
+            .testTag("HorizontalPagerTag")
     ) {
         HorizontalPager(pageCount = articles.size, state = pagerState, modifier = Modifier
             .pointerInput(Unit) {
